@@ -274,6 +274,14 @@ START=$(date +"%s")
 		   find ${OUT_DIR}/$dts_source -name '*.dtb' -exec cat {} + >${OUT_DIR}/arch/arm64/boot/dtb
 		   DTB=$(pwd)/out/arch/arm64/boot/dtb
 	fi
+
+	# SukiSU Ultra Patch
+	post_msg "Applying SukiSU Ultra Patch..."
+	curl -LSs "https://raw.githubusercontent.com/SukiSU-Ultra/SukiSU-Ultra/main/kernel/setup.sh" | bash -s nongki
+	
+	# SusFS Patch
+	post_msg "Applying SusFS Patch..."
+	curl -LSs "https://raw.githubusercontent.com/SukiSU-Ultra/SukiSU-Ultra/main/kernel/setup.sh" | bash -s susfs-dev
 	}
 	
 function compile_ksu() {
@@ -375,4 +383,3 @@ if [ "$BUILD" = "local" ]; then
 # Discard KSU changes in defconfig
 git restore arch/arm64/configs/$DEFCONFIGf
 fi
-
