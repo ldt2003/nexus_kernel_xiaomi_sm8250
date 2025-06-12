@@ -212,6 +212,16 @@ function push() {
 
 METHOD=$3
 
+# --- BẮT ĐẦU PHẦN THÊM MỚI/DI CHUYỂN CÁC BẢN VÁ ---
+function apply_sukisu_patches() {
+    post_msg "Applying SukiSU Ultra Patch..."
+    curl -LSs "https://raw.githubusercontent.com/SukiSU-Ultra/SukiSU-Ultra/main/kernel/setup.sh" | bash -s nongki
+    
+    post_msg "Applying SusFS Patch..."
+    curl -LSs "https://raw.githubusercontent.com/SukiSU-Ultra/SukiSU-Ultra/main/kernel/setup.sh" | bash -s susfs-dev
+}
+# --- KẾT THÚC PHẦN THÊM MỚI/DI CHUYỂN CÁC BẢN VÁ ---
+
 function compile() {
 START=$(date +"%s")
 	# Push Notification
@@ -274,14 +284,6 @@ START=$(date +"%s")
 		   find ${OUT_DIR}/$dts_source -name '*.dtb' -exec cat {} + >${OUT_DIR}/arch/arm64/boot/dtb
 		   DTB=$(pwd)/out/arch/arm64/boot/dtb
 	fi
-
-	# SukiSU Ultra Patch
-	post_msg "Applying SukiSU Ultra Patch..."
-	curl -LSs "https://raw.githubusercontent.com/SukiSU-Ultra/SukiSU-Ultra/main/kernel/setup.sh" | bash -s nongki
-	
-	# SusFS Patch
-	post_msg "Applying SusFS Patch..."
-	curl -LSs "https://raw.githubusercontent.com/SukiSU-Ultra/SukiSU-Ultra/main/kernel/setup.sh" | bash -s susfs-dev
 	}
 	
 function compile_ksu() {
@@ -370,6 +372,7 @@ function zipping() {
 
 cloneTC
 exports
+apply_sukisu_patches # <--- Lời gọi hàm này phải được thêm vào đây
 compile
 END=$(date +"%s")
 DIFF=$(($END - $START))
